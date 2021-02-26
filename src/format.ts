@@ -83,15 +83,15 @@ function render(data: any, options: FormatJSONOptions, level = 0): FormatJSONRen
     };
     arr.push({ value: '{' });
     const rendered = Object.keys(data)
-    .map(key => [
-      {
-        type: KEY,
-        data: [{ value: quoteString(key, options), type: 'key' }],
-        separator: [{ value: ':' }],
-      },
-      render(data[key], options, level + 1),
-    ])
-    .reduce((res, cur) => [...res, ...cur], []);
+      .map(key => [
+        {
+          type: KEY,
+          data: [{ value: quoteString(key, options), type: 'key' }],
+          separator: [{ value: ':' }],
+        },
+        render(data[key], options, level + 1),
+      ])
+      .reduce((res, cur) => [...res, ...cur], []);
     if (rendered.length) {
       arr.push(
         ...options.indent ? [BR] : [],
@@ -113,7 +113,11 @@ function render(data: any, options: FormatJSONOptions, level = 0): FormatJSONRen
   };
 }
 
-function join(rendered: FormatJSONRenderItem[], options: FormatJSONOptions, level: number): FormatJSONRenderItem[] {
+function join(
+  rendered: FormatJSONRenderItem[],
+  options: FormatJSONOptions,
+  level: number,
+): FormatJSONRenderItem[] {
   const arr: FormatJSONRenderItem[] = [];
   for (let i = 0; i < rendered.length; i += 1) {
     const item = rendered[i];
@@ -129,7 +133,7 @@ function join(rendered: FormatJSONRenderItem[], options: FormatJSONOptions, leve
       } else {
         arr.push(
           ...options.indent ? [BR] : [],
-          getSpace(level, options.indent)
+          getSpace(level, options.indent),
         );
       }
     }

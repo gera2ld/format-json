@@ -1,11 +1,15 @@
-import JSON5 from 'json5';
 import { FormatJSONOptions, FormatJSONRenderItem } from './types';
 
-const MULTILINE = 'MULTILINE';
-const SINGLELINE = 'SINGLELINE';
-const KEY = 'KEY';
-const COMMA = { type: 'comma', value: ',' };
-const BR = { type: 'br', value: '\n' };
+export enum ItemTypes {
+  MULTILINE = 'MULTILINE',
+  SINGLELINE = 'SINGLELINE',
+  KEY = 'KEY',
+  COMMA = 'COMMA',
+  BR = 'BR',
+}
+
+const COMMA = { type: ItemTypes.COMMA, value: ',' };
+const BR = { type: ItemTypes.BR, value: '\n' };
 
 const charMapBase = {
   '\\': '\\\\',
@@ -43,74 +47,96 @@ function getSpace(level: number, indent: number): FormatJSONRenderItem {
   return { type: 'space', value: ' '.repeat(indent * level) };
 }
 
-function render(data: any, options: FormatJSONOptions, level = 0): FormatJSONRenderItem {
-  if (Array.isArray(data)) {
-    const arr: FormatJSONRenderItem[] = [];
-    const ret = {
-      type: MULTILINE,
-      separator: [COMMA],
-      data: arr,
-    };
-    arr.push({ value: '[' });
-    if (data.length) {
-      const rendered = data.map(item => render(item, options, level + 1));
-      arr.push(
-        ...options.indent ? [BR] : [],
-        getSpace(level + 1, options.indent),
-        ...join(rendered, options, level + 1),
-        ...options.indent ? [BR] : [],
-        getSpace(level, options.indent),
-      );
-    } else {
-      ret.type = SINGLELINE;
-    }
-    arr.push({ value: ']' });
-    return ret;
+function renderArray(data: any[], options: FormatJSONOptions, path = []): FormatJSONRenderItem {
+  const level = path.length;
+  const arr: FormatJSONRenderItem[] = [];
+  const ret = {
+    type: ItemTypes.MULTILINE,
+    separator: [COMMA],
+    data: arr,
+    path,
+  };
+  arr.push({ value: '[' });
+  if (data.length) {
+    const rendered = data.map((item, i) => render(item, options, [...path, i]));
+    arr.push(
+      ...options.indent ? [BR] : [],
+      getSpace(level + 1, options.indent),
+      ...join(rendered, options, level + 1),
+      ...options.indent ? [BR] : [],
+      getSpace(level, options.indent),
+    );
+  } else {
+    ret.type = ItemTypes.SINGLELINE;
   }
-  if (data === null) {
-    return {
-      type: SINGLELINE,
+  arr.push({ value: ']' });
+  return ret;
+}
+
+function renderObject(data: any, options: FormatJSONOptions, path = []): FormatJSONRenderItem {
+  const level = path.length;
+  const arr: FormatJSONRenderItem[] = [];
+  const ret = {
+    type: ItemTypes.MULTILINE,
+    separator: [COMMA],
+    data: arr,
+    path,
+  };
+  arr.push({ value: '{' });
+  const rendered = Object.keys(data)
+    .map(key => {
+      const subpath = [...path, key];
+      const keyItem = {
+        type: ItemTypes.KEY,
+        data: [{ value: quoteString(key, options), type: 'key' }],
+        separator: [{ value: ':' }],
+        path: subpath,
+      };
+      options.onData?.(keyItem);
+      return [
+        keyItem,
+        render(data[key], options, subpath),
+      ];
+    })
+    .reduce((res, cur) => [...res, ...cur], []);
+  if (rendered.length) {
+    arr.push(
+      ...options.indent ? [BR] : [],
+      getSpace(level + 1, options.indent),
+      ...join(rendered, options, level + 1),
+      ...options.indent ? [BR] : [],
+      getSpace(level, options.indent),
+    );
+  } else {
+    ret.type = ItemTypes.SINGLELINE;
+  }
+  arr.push({ value: '}' });
+  return ret;
+}
+
+export function render(data: any, options: FormatJSONOptions, path = []): FormatJSONRenderItem {
+  let result: FormatJSONRenderItem;
+  if (Array.isArray(data)) {
+    result = renderArray(data, options, path);
+  } else if (data === null) {
+    result = {
+      type: ItemTypes.SINGLELINE,
       separator: [COMMA],
       data: [{ value: data, type: 'null' }],
+      path,
     };
-  }
-  if (typeof data === 'object') {
-    const arr: FormatJSONRenderItem[] = [];
-    const ret = {
-      type: MULTILINE,
+  } else if (typeof data === 'object') {
+    result = renderObject(data, options, path);
+  } else {
+    result = {
+      type: ItemTypes.SINGLELINE,
       separator: [COMMA],
-      data: arr,
+      data: [{ value: typeof data === 'string' ? quoteString(data, { ...options, quoteAsNeeded: false }) : data }],
+      path,
     };
-    arr.push({ value: '{' });
-    const rendered = Object.keys(data)
-      .map(key => [
-        {
-          type: KEY,
-          data: [{ value: quoteString(key, options), type: 'key' }],
-          separator: [{ value: ':' }],
-        },
-        render(data[key], options, level + 1),
-      ])
-      .reduce((res, cur) => [...res, ...cur], []);
-    if (rendered.length) {
-      arr.push(
-        ...options.indent ? [BR] : [],
-        getSpace(level + 1, options.indent),
-        ...join(rendered, options, level + 1),
-        ...options.indent ? [BR] : [],
-        getSpace(level, options.indent),
-      );
-    } else {
-      ret.type = SINGLELINE;
-    }
-    arr.push({ value: '}' });
-    return ret;
   }
-  return {
-    type: SINGLELINE,
-    separator: [COMMA],
-    data: [{ value: typeof data === 'string' ? quoteString(data, { ...options, quoteAsNeeded: false }) : data }],
-  };
+  options.onData?.(result);
+  return result;
 }
 
 function join(
@@ -128,7 +154,7 @@ function join(
       arr.push(...item.separator);
     }
     if (next) {
-      if (item.type === KEY) {
+      if (item.type === ItemTypes.KEY) {
         if (options.indent) arr.push({ value: ' ' });
       } else {
         arr.push(
@@ -141,8 +167,7 @@ function join(
   return arr;
 }
 
-export function format(input: string, options: FormatJSONOptions): string {
-  const obj = JSON5.parse(input);
-  const rendered = render(obj, options);
+export function format(data: any, options: FormatJSONOptions): string {
+  const rendered = render(data, options);
   return (rendered.data || []).map(({ value }) => `${value}`).join('');
 }

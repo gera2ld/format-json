@@ -44,8 +44,7 @@
     "pinst": "^2.1.6"
   },
   "dependencies": {
-    "@babel/runtime": "^7.13.7",
-    "json5": "^2.2.0"
+    "@babel/runtime": "^7.13.7"
   },
   "repository": "git@github.com:gera2ld/format-json.git",
   "author": "Gerald <gera2ld@live.com>"

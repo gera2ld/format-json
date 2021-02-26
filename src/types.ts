@@ -1,3 +1,13 @@
+export type FormatJSONPath = (string | number)[];
+
+export interface FormatJSONRenderItem {
+  type?: string;
+  value?: string;
+  data?: FormatJSONRenderItem[];
+  separator?: FormatJSONRenderItem[];
+  path?: FormatJSONPath;
+}
+
 export interface FormatJSONOptions {
   /**
    * 0 for compact display, otherwise number of spaces for each indent
@@ -19,11 +29,8 @@ export interface FormatJSONOptions {
    * whether to quote multiline strings as template literals
    */
   template: boolean;
-}
-
-export interface FormatJSONRenderItem {
-  type?: string;
-  value?: string;
-  data?: FormatJSONRenderItem[];
-  separator?: FormatJSONRenderItem[];
+  /**
+   * callback when an object is emitted
+   */
+  onData?: (data: FormatJSONRenderItem) => void;
 }

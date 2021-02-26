@@ -41,7 +41,8 @@
     "@gera2ld/plaid-test": "~2.2.1",
     "del-cli": "^3.0.1",
     "husky": "^5.1.1",
-    "pinst": "^2.1.6"
+    "pinst": "^2.1.6",
+    "typedoc": "^0.20.28"
   },
   "dependencies": {
     "@babel/runtime": "^7.13.7"

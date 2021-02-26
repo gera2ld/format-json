@@ -167,7 +167,15 @@ function join(
   return arr;
 }
 
-export function format(data: any, options: FormatJSONOptions): string {
-  const rendered = render(data, options);
+export function format(data: any, options: Partial<FormatJSONOptions>): string {
+  const renderOptions: FormatJSONOptions = {
+    indent: 0,
+    quoteAsNeeded: false,
+    quote: '"',
+    trailing: false,
+    template: false,
+    ...options,
+  };
+  const rendered = render(data, renderOptions);
   return (rendered.data || []).map(({ value }) => `${value}`).join('');
 }

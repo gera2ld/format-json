@@ -83,8 +83,15 @@ function renderObject(data: any, options: FormatJSONOptions, path = []): FormatJ
     path,
   };
   arr.push({ value: '{' });
-  const rendered = Object.keys(data)
-    .map(key => {
+  const entries = typeof options.entries === 'function'
+    ? options.entries(data)
+    : Object.entries(data).sort((a, b) => {
+      if (a[0] < b[0]) return -1;
+      if (a[0] > b[0]) return 1;
+      return 0;
+    });
+  const rendered = entries
+    .map(([key, value]) => {
       const subpath = [...path, key];
       const keyItem = {
         type: ItemTypes.KEY,
@@ -95,7 +102,7 @@ function renderObject(data: any, options: FormatJSONOptions, path = []): FormatJ
       options.onData?.(keyItem);
       return [
         keyItem,
-        render(data[key], options, subpath),
+        render(value, options, subpath),
       ];
     })
     .reduce((res, cur) => [...res, ...cur], []);

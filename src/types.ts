@@ -8,29 +8,35 @@ export interface FormatJSONRenderItem {
   path?: FormatJSONPath;
 }
 
+export type FormatJSONEntry<T = any> = [key: string, value: T];
+
 export interface FormatJSONOptions {
   /**
    * 0 for compact display, otherwise number of spaces for each indent
    */
   indent: number;
   /**
-   * whether to omit quotes if possible
+   * Whether to omit quotes if possible.
    */
   quoteAsNeeded: boolean;
   /**
-   * preferred quote character, `'` by default
+   * Preferred quote character, `'` by default.
    */
   quote: '\'' | '"';
   /**
-   * whether to add trailing commas
+   * Whether to add trailing commas.
    */
   trailing: boolean;
   /**
-   * whether to quote multiline strings as template literals
+   * Whether to quote multiline strings as template literals.
    */
   template: boolean;
   /**
-   * callback when an object is emitted
+   * Extract entries from an object, `Object.entries` with sorted keys by default.
+   */
+  entries?: (data: any) => FormatJSONEntry[];
+  /**
+   * Callback when an object is emitted.
    */
   onData?: (data: FormatJSONRenderItem) => void;
 }

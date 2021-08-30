@@ -129,7 +129,7 @@ export function render(data: any, options: FormatJSONOptions, path = []): Format
     result = {
       type: ItemTypes.SINGLELINE,
       separator: [COMMA],
-      data: [{ value: data, type: 'null' }],
+      data: [{ value: `${data}`, type: 'null' }],
       path,
     };
   } else if (typeof data === 'object') {
@@ -138,7 +138,7 @@ export function render(data: any, options: FormatJSONOptions, path = []): Format
     result = {
       type: ItemTypes.SINGLELINE,
       separator: [COMMA],
-      data: [{ value: typeof data === 'string' ? quoteString(data, { ...options, quoteAsNeeded: false }) : data }],
+      data: [{ value: typeof data === 'string' ? quoteString(data, { ...options, quoteAsNeeded: false }) : `${data}` }],
       path,
     };
   }
@@ -174,13 +174,17 @@ function join(
   return arr;
 }
 
+export const defaultRenderOptions: FormatJSONOptions = {
+  indent: 0,
+  quoteAsNeeded: false,
+  quote: '"',
+  trailing: false,
+  template: false,
+};
+
 export function format(data: any, options: Partial<FormatJSONOptions>): string {
   const renderOptions: FormatJSONOptions = {
-    indent: 0,
-    quoteAsNeeded: false,
-    quote: '"',
-    trailing: false,
-    template: false,
+    ...defaultRenderOptions,
     ...options,
   };
   const rendered = render(data, renderOptions);

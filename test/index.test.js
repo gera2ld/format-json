@@ -1,4 +1,4 @@
-import { ItemTypes, format } from '../src';
+import { ItemTypes, format, render, defaultRenderOptions } from '../src';
 
 test('JSON', () => {
   expect(format({
@@ -12,6 +12,129 @@ test('JSON', () => {
     trailing: false,
     template: false,
   })).toEqual('{"a":1,"b":2,"c":["a",{"d":"a\\nb"}]}');
+
+  expect(render({
+    a: 1,
+    b: 2,
+    c: ['a', { d: 'a\nb' }],
+  }, defaultRenderOptions)).toEqual({
+    data: [
+      {
+        value: '{',
+      },
+      {
+        type: 'space',
+        value: '',
+      },
+      {
+        type: 'key',
+        value: '"a"',
+      },
+      {
+        value: ':',
+      },
+      {
+        value: '1',
+      },
+      {
+        type: 'COMMA',
+        value: ',',
+      },
+      {
+        type: 'space',
+        value: '',
+      },
+      {
+        type: 'key',
+        value: '"b"',
+      },
+      {
+        value: ':',
+      },
+      {
+        value: '2',
+      },
+      {
+        type: 'COMMA',
+        value: ',',
+      },
+      {
+        type: 'space',
+        value: '',
+      },
+      {
+        type: 'key',
+        value: '"c"',
+      },
+      {
+        value: ':',
+      },
+      {
+        value: '[',
+      },
+      {
+        type: 'space',
+        value: '',
+      },
+      {
+        value: '"a"',
+      },
+      {
+        type: 'COMMA',
+        value: ',',
+      },
+      {
+        type: 'space',
+        value: '',
+      },
+      {
+        value: '{',
+      },
+      {
+        type: 'space',
+        value: '',
+      },
+      {
+        type: 'key',
+        value: '"d"',
+      },
+      {
+        value: ':',
+      },
+      {
+        value: '"a\\nb"',
+      },
+      {
+        type: 'space',
+        value: '',
+      },
+      {
+        value: '}',
+      },
+      {
+        type: 'space',
+        value: '',
+      },
+      {
+        value: ']',
+      },
+      {
+        type: 'space',
+        value: '',
+      },
+      {
+        value: '}',
+      },
+    ],
+    path: [],
+    separator: [
+      {
+        type: 'COMMA',
+        value: ',',
+      },
+    ],
+    type: 'MULTILINE',
+  });
 });
 
 test('JavaScript', () => {

@@ -1,6 +1,6 @@
 {
   "name": "@gera2ld/format-json",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Format JSON in different flavors",
   "license": "MIT",
   "scripts": {

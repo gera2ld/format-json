@@ -34,16 +34,16 @@
     "types"
   ],
   "devDependencies": {
-    "@gera2ld/plaid": "~2.4.0",
-    "@gera2ld/plaid-common-ts": "~2.4.0",
-    "@gera2ld/plaid-rollup": "~2.4.0",
-    "@gera2ld/plaid-test": "~2.4.0",
+    "@gera2ld/plaid": "~2.5.1",
+    "@gera2ld/plaid-common-ts": "~2.5.1",
+    "@gera2ld/plaid-rollup": "~2.5.0",
+    "@gera2ld/plaid-test": "~2.5.0",
     "del-cli": "^4.0.1",
-    "husky": "^7.0.2",
-    "typedoc": "^0.21.6"
+    "husky": "^7.0.4",
+    "typedoc": "^0.22.13"
   },
   "dependencies": {
-    "@babel/runtime": "^7.15.3"
+    "@babel/runtime": "^7.17.7"
   },
   "repository": "git@github.com:gera2ld/format-json.git",
   "author": "Gerald <gera2ld@live.com>"

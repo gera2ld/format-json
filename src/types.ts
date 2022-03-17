@@ -8,7 +8,7 @@ export interface FormatJSONRenderItem {
   path?: FormatJSONPath;
 }
 
-export type FormatJSONEntry<T = any> = [key: string, value: T, displayKey?: string];
+export type FormatJSONEntry<T = any> = [key: string, value: T];
 
 export interface FormatJSONOptions {
   /**

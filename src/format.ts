@@ -91,11 +91,11 @@ function renderObject(data: any, options: FormatJSONOptions, path = []): FormatJ
       return 0;
     });
   const rendered = entries
-    .map(([key, value, displayKey]) => {
+    .map(([key, value]) => {
       const subpath = [...path, key];
       const keyItem = {
         type: ItemTypes.KEY,
-        data: [{ value: quoteString(displayKey ?? key, options), type: 'key' }],
+        data: [{ value: quoteString(key, options), type: 'key' }],
         separator: [{ value: ':' }],
         path: subpath,
       };

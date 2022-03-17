@@ -191,3 +191,19 @@ test('highlight', () => {
     },
   })).toEqual('{"a":1,<key-b>"b"</key-b>:<value-b>2</value-b>,"c":3}');
 });
+
+test('no sorting', () => {
+  expect(format({
+    a: 1,
+    d: 4,
+    b: 2,
+    c: 3,
+  }, {
+    indent: 0,
+    quoteAsNeeded: false,
+    quote: '"',
+    trailing: false,
+    template: false,
+    entries: obj => Object.entries(obj),
+  })).toEqual('{"a":1,"d":4,"b":2,"c":3}');
+});

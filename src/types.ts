@@ -1,11 +1,17 @@
+import { GroupTypes, ItemTypes } from "./constants";
+
 export type FormatJSONPath = (string | number)[];
 
-export interface FormatJSONRenderItem {
-  type?: string;
-  value?: string;
-  data?: FormatJSONRenderItem[];
-  separator?: FormatJSONRenderItem[];
+export interface FormatJSONRenderGroup {
+  type: GroupTypes;
+  data: FormatJSONRenderItem[];
+  separator: FormatJSONRenderItem[];
   path?: FormatJSONPath;
+}
+
+export interface FormatJSONRenderItem {
+  type: ItemTypes;
+  value?: string;
 }
 
 export type FormatJSONEntry<T = any> = [key: string, value: T];
@@ -38,5 +44,5 @@ export interface FormatJSONOptions {
   /**
    * Callback when an object is emitted.
    */
-  onData?: (data: FormatJSONRenderItem) => void;
+  onData?: (data: FormatJSONRenderGroup) => void;
 }

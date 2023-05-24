@@ -1,4 +1,4 @@
-import { ItemTypes, format, render, defaultRenderOptions } from '../src';
+import { ItemTypes, format, render, defaultRenderOptions, GroupTypes } from '../src';
 
 test('JSON', () => {
   expect(format({
@@ -20,120 +20,150 @@ test('JSON', () => {
   }, defaultRenderOptions)).toEqual({
     data: [
       {
+        type: ItemTypes.BLOCK,
         value: '{',
       },
       {
-        type: 'space',
+        type: ItemTypes.SPACE,
         value: '',
       },
       {
-        type: 'key',
+        type: ItemTypes.KEY,
         value: '"a"',
       },
       {
+        type: ItemTypes.COLON,
         value: ':',
       },
       {
+        type: ItemTypes.SPACE,
+        value: '',
+      },
+      {
+        type: ItemTypes.VALUE,
         value: '1',
       },
       {
-        type: 'COMMA',
+        type: ItemTypes.COMMA,
         value: ',',
       },
       {
-        type: 'space',
+        type: ItemTypes.SPACE,
         value: '',
       },
       {
-        type: 'key',
+        type: ItemTypes.KEY,
         value: '"b"',
       },
       {
+        type: ItemTypes.COLON,
         value: ':',
       },
       {
+        type: ItemTypes.SPACE,
+        value: '',
+      },
+      {
+        type: ItemTypes.VALUE,
         value: '2',
       },
       {
-        type: 'COMMA',
+        type: ItemTypes.COMMA,
         value: ',',
       },
       {
-        type: 'space',
+        type: ItemTypes.SPACE,
         value: '',
       },
       {
-        type: 'key',
+        type: ItemTypes.KEY,
         value: '"c"',
       },
       {
+        type: ItemTypes.COLON,
         value: ':',
       },
       {
+        type: ItemTypes.SPACE,
+        value: '',
+      },
+      {
+        type: ItemTypes.BLOCK,
         value: '[',
       },
       {
-        type: 'space',
+        type: ItemTypes.SPACE,
         value: '',
       },
       {
+        type: ItemTypes.VALUE,
         value: '"a"',
       },
       {
-        type: 'COMMA',
+        type: ItemTypes.COMMA,
         value: ',',
       },
       {
-        type: 'space',
+        type: ItemTypes.SPACE,
         value: '',
       },
       {
+        type: ItemTypes.BLOCK,
         value: '{',
       },
       {
-        type: 'space',
+        type: ItemTypes.SPACE,
         value: '',
       },
       {
-        type: 'key',
+        type: ItemTypes.KEY,
         value: '"d"',
       },
       {
+        type: ItemTypes.COLON,
         value: ':',
       },
       {
+        type: ItemTypes.SPACE,
+        value: '',
+      },
+      {
+        type: ItemTypes.VALUE,
         value: '"a\\nb"',
       },
       {
-        type: 'space',
+        type: ItemTypes.SPACE,
         value: '',
       },
       {
+        type: ItemTypes.BLOCK,
         value: '}',
       },
       {
-        type: 'space',
+        type: ItemTypes.SPACE,
         value: '',
       },
       {
+        type: ItemTypes.BLOCK,
         value: ']',
       },
       {
-        type: 'space',
+        type: ItemTypes.SPACE,
         value: '',
       },
       {
+        type: ItemTypes.BLOCK,
         value: '}',
       },
     ],
     path: [],
     separator: [
       {
-        type: 'COMMA',
+        type: ItemTypes.COMMA,
         value: ',',
       },
     ],
-    type: 'MULTILINE',
+    type: GroupTypes.MULTILINE,
   });
 });
 
@@ -174,17 +204,17 @@ test('highlight', () => {
     template: false,
     onData(data) {
       if (data.path.join('.') === 'b') {
-        if (data.type === ItemTypes.KEY) {
+        if (data.type === GroupTypes.KEY) {
           data.data = [
-            { value: '<key-b>'},
+            { type: ItemTypes.VALUE, value: '<key-b>' },
             ...data.data,
-            { value: '</key-b>'},
+            { type: ItemTypes.VALUE, value: '</key-b>' },
           ];
         } else {
           data.data = [
-            { value: '<value-b>'},
+            { type: ItemTypes.VALUE, value: '<value-b>' },
             ...data.data,
-            { value: '</value-b>'},
+            { type: ItemTypes.VALUE, value: '</value-b>' },
           ];
         }
       }
